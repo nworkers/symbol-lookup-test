@@ -1,8 +1,13 @@
 
-all: exe 
+all: exe1 exe2
 
-exe: main.cpp lib_static lib_shared lib_util
-	gcc -o main main.cpp -lstdc++ -lstatic -lutil -L. -Wl,--allow-shlib-undefined,-rpath .
+exe1: main.cpp lib_static lib_shared lib_util
+	gcc -o exe1 main.cpp -lstdc++ -lstatic -lutil -L. -pie -Wl,-rpath=.,-z,relro,--no-undefined
+	nm -CD exe1
+
+exe2: main.cpp lib_static lib_shared lib_util
+	gcc -o exe2 main.cpp -lstdc++ -lstatic -lutil -L. -pie -Wl,-rpath=.,-z,relro,--no-undefined,--exclude-libs,ALL
+	nm -CD exe2
 
 lib_static: lib_static.cpp
 	gcc -c  -o lib_static.o lib_static.cpp
